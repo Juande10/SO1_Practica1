@@ -43,7 +43,7 @@ static struct file_operations operaciones =
 
 static int iniciar(void)
 {
-    proc_create("ram_201314412", 0, NULL, &operaciones);
+    proc_create("ram_201314412", 0777, NULL, &operaciones);
     printk(KERN_INFO "Juan de Dios Molina Herrera\n");
     return 0;
 }
