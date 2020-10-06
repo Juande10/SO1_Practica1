@@ -14,10 +14,13 @@ def index():
     with open("fake_proc/cpu_201314412", "r+") as f:
         data_cpu=f.read()
 
+    with open("fake_proc/ram_201314412", "r+") as f:
+        data_ram = f.read()
+
     return jsonify(
         status=True,
-        cpu=data_cpu,
-        data_ram = 666,
+        data_cpu=data_cpu,
+        data_ram = data_ram,
         message='Welcome to the Dockerized Flask MongoDB app!'
     )
 
