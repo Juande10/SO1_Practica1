@@ -11,7 +11,7 @@
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Escribir informacion de la memoria ram.");
-MODULE_AUTHOR("Juan de Dios Molina Herrera");
+MODULE_AUTHOR("Juan de Dios Molina Herrera - 201314412");
 
 struct sysinfo inf;
 

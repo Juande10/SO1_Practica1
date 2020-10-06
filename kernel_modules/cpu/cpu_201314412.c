@@ -18,7 +18,7 @@ MODULE_AUTHOR("Juan de Dios Molina Herrera - 201314412");
 MODULE_DESCRIPTION("Escribir informacion del cpu.");
 MODULE_LICENSE("GPL");
 
-#define FileProc "cpu"
+#define FileProc "cpu_201314412"
 
 struct sysinfo mem;
 long total;
