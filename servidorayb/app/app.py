@@ -11,8 +11,11 @@ db = mongo.db
 
 @application.route('/')
 def index():
+    with open("fake_proc/cpu", "r+") as f:
+        data=f.read()
     return jsonify(
         status=True,
+        data=data,
         message='Welcome to the Dockerized Flask MongoDB app!'
     )
 

@@ -1,153 +1,72 @@
-#include <linux/kernel.h>
-#include <linux/module.h>
+#include <linux/module.h> /* Needed by all modules */
+#include <linux/kernel.h> /* Needed for KERN_INFO */
 #include <linux/init.h>
-#include <linux/sched/signal.h>
-#include <linux/sched.h>
-
-#include <linux/list.h>
-#include <linux/types.h>
-#include <linux/slab.h>
-#include <linux/string.h>
 #include <linux/fs.h>
-#include <linux/seq_file.h>
 #include <linux/proc_fs.h>
+#include <linux/seq_file.h>
+#include <asm/uaccess.h>
+#include <linux/hugetlb.h>
 #include <linux/mm.h>
+#include <linux/mman.h>
+#include <linux/mmzone.h>
+#include <linux/swap.h>
+#include <linux/swapfile.h>
+#include <linux/vmstat.h>
+#include <linux/atomic.h>
 
-struct task_struct *task;
-struct task_struct *task_child; 
-struct list_head *list;         
-
-MODULE_LICENSE("GPL");
-MODULE_DESCRIPTION("CPU");
 MODULE_AUTHOR("Juan de Dios Molina Herrera - 201314412");
+MODULE_DESCRIPTION("Escribir informacion del cpu.");
+MODULE_LICENSE("GPL");
 
-int iterate_init(struct seq_file *archivo) /*    Init Module    */
+#define FileProc "cpu"
+
+struct sysinfo mem;
+long total;
+long consumido;
+
+static int show_cpu_stat(struct seq_file *f, void *v)
 {
-    
-    seq_printf(archivo, "-----------------------------------------------------------------OBTENIENDO PROCESOS---------------------------------------------------------------------\n");
-    for_each_process(task)
-    {                     
-        char estadoq = 79; //otro estado
-        if (task->state == TASK_RUNNING)
-        {
-            estadoq = 82;
-        }
-        else if (task->state == __TASK_STOPPED)
-        {
-            estadoq = 83;
-        }
-        else if (task->state == TASK_INTERRUPTIBLE)
-        {
-            estadoq = 73;
-        }
-        else if (task->state == TASK_UNINTERRUPTIBLE)
-        {
-            estadoq = 85;
-        }
-        else if (task->exit_state == EXIT_ZOMBIE)
-        {
-            estadoq = 90;
-        }
-        else if (task->state == TASK_DEAD)
-        {
-            estadoq = 68;
-        }
-        seq_printf(archivo, "\n\n\t\t| PID PROCESO ACTUAL: %d \t NOMBRE: %s \t ESTADO: %c |\n", task->pid, task->comm, estadoq); 
-        int actual=1;
-        list_for_each(list, &task->children)
-        {                                                               
-            task_child = list_entry(list, struct task_struct, sibling);
 
-            char estado = 79; //otro estado
-            if (task_child->state == TASK_RUNNING)
-            {
-                estado = 82;
-            }
-            else if (task_child->state == __TASK_STOPPED)
-            {
-                estado = 83;
-            }
-            else if (task_child->state == TASK_INTERRUPTIBLE)
-            {
-                estado = 73;
-            }
-            else if (task_child->state == TASK_UNINTERRUPTIBLE)
-            {
-                estado = 85;
-            }
-            else if (task_child->exit_state == EXIT_ZOMBIE)
-            {
-                estado = 90;
-            }
-            else if (task_child->state == TASK_DEAD)
-            {
-                estado = 68;
-            }
-            seq_printf(archivo, "\n%d) PPROCESO_PADRE: %s PID_PROCESO_PADRE%d || PID_HIJO: %d NOMBRE: %s ESTADO: %c \n", actual, task->comm, task->pid, task_child->pid, task_child->comm, estado);
-            actual++;
-        }
-        seq_printf(archivo, "\n\n-----------------------------------------------------------------------------------------------------------------------------------------------------\n"); 
-    }
-
-    return 0;
+        si_meminfo(&mem);
+        total = (mem.totalram * 4)/1024;
+        consumido = ((mem.totalram - mem.freeram) * 4)/1024;
+        seq_printf(f, "{\n");
+        seq_printf(f, "\"usado\": %lu \n}\n", (consumido*100)/total);
+        return 0;
 }
 
-static int write_file(struct seq_file *archivo, void *v)
+static int cpuinfo_proc_open(struct inode *inode, struct file *file)
 {
-    seq_printf(archivo, "\n");
-    seq_printf(archivo, "      -------------------------------------\n");
-    seq_printf(archivo, "      |     PROYECTO 1 - MODULO DE CPU    |\n");
-    seq_printf(archivo, "      | LABORATORIO SISTEMAS OPERATIVOS 1 |\n");
-    seq_printf(archivo, "      |           2SEM  2020              |\n");
-    seq_printf(archivo, "      -------------------------------------\n");
-    seq_printf(archivo, "\n");
-    seq_printf(archivo, "      JUAN DE DIOS MOLINA HERRERA - 201314412\n");
-    seq_printf(archivo, "\n");
-    seq_printf(archivo, "      -------------------------------------\n");
-    seq_printf(archivo, "      |              ESTADOS              |\n");
-    seq_printf(archivo, "      |  TASK_RUNNING         =        R  |\n");
-    seq_printf(archivo, "      |  TASK_INTERRUPTIBLE   =        I  |\n");
-    seq_printf(archivo, "      |  TASK_UNINTERRUPTIBLE =        U  |\n");
-    seq_printf(archivo, "      |  TASK_STOPPED         =        S  |\n");
-    seq_printf(archivo, "      |  TASK_ZOMBIE          =        Z  |\n");
-    seq_printf(archivo, "      |  OTRO_TASK            =        0  |\n");
-    seq_printf(archivo, "      -------------------------------------\n");
-    seq_printf(archivo, "\n");
-    return iterate_init(archivo);
+        size_t size = 1024 + 128 * num_online_cpus();
+        size += 2 * nr_irqs;
+        return single_open_size(file, show_cpu_stat, NULL, size);
 }
 
-static int abrir(struct inode *inode, struct file *file)
-{
-    return single_open(file, write_file, NULL);
-}
-
-static struct file_operations ops =
-    {
-        .open = abrir,
-        .read = seq_read
-
+static const struct file_operations Cpuinfo_fops = {
+        .owner = THIS_MODULE,
+        .open = cpuinfo_proc_open,
+        .read = seq_read,
+        .llseek = seq_lseek,
+        .release = single_release,
 };
 
-static int iniciar(void)
+static int __init start_function(void)
 {
-    proc_create("cpu_201314412", 0, NULL, &ops);
-    printk(KERN_INFO "\nNombre:Juan de Dios Molina Herrera");
-    return 0;
+        printk(KERN_INFO "Modulo cpu cargado");
+        proc_create(FileProc, 0777, NULL, &Cpuinfo_fops);
+        printk(KERN_INFO "Archivo creado: /proc/%s.\n", FileProc);
+        return 0;
 }
 
-static void salir(void)
+static void __exit clean_function(void)
 {
-    remove_proc_entry("cpu_201314412", NULL);
-    printk(KERN_INFO "\nSistemas Operativos 1\n");
+        remove_proc_entry(FileProc, NULL);
+        printk(KERN_INFO "Modulo cpu eliminado :)");
 }
 
+module_init(start_function);
+module_exit(clean_function);
 
-void cleanup_exit(void) 
-{
 
-    printk(KERN_INFO "%s", "REMOVING MODULE\n");
 
-} 
 
-module_init(iniciar);
-module_exit(salir); 
