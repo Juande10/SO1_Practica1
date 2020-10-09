@@ -1,5 +1,7 @@
+
 #include <linux/module.h> /* Needed by all modules */
 #include <linux/kernel.h> /* Needed for KERN_INFO */
+
 #include <linux/init.h>
 #include <linux/fs.h>
 #include <linux/proc_fs.h>
@@ -31,7 +33,7 @@ static int show_cpu_stat(struct seq_file *f, void *v)
         total = (mem.totalram * 4)/1024;
         consumido = ((mem.totalram - mem.freeram) * 4)/1024;
         seq_printf(f, "{\n");
-        seq_printf(f, "\"usado\": %lu \n}\n", (consumido*100)/total);
+        seq_printf(f, "\"usado\": %lu \n}\n", (consumido*10)/total);
         return 0;
 }
 
@@ -52,21 +54,14 @@ static const struct file_operations Cpuinfo_fops = {
 
 static int __init start_function(void)
 {
-        printk(KERN_INFO "Modulo cpu cargado");
         proc_create(FileProc, 0777, NULL, &Cpuinfo_fops);
-        printk(KERN_INFO "Archivo creado: /proc/%s.\n", FileProc);
         return 0;
 }
 
 static void __exit clean_function(void)
 {
         remove_proc_entry(FileProc, NULL);
-        printk(KERN_INFO "Modulo cpu eliminado :)");
 }
 
 module_init(start_function);
 module_exit(clean_function);
-
-
-
-

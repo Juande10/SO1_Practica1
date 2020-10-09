@@ -12,7 +12,7 @@ services:
    APP_DEBUG: "False"
    APP_PORT: 5000
    MONGODB_DATABASE: sopes1db
-   MONGODB_USERNAME: flaskuser
+   MONGODB_USERNAME: mongodbuser
    MONGODB_PASSWORD: sopes1
    MONGODB_HOSTNAME: mongodb
   ports:
@@ -22,14 +22,14 @@ services:
     - ./app:/var/www
     - /proc:/var/www/fake_proc
 
+  links:
+    - mongodb
+
  mongodb:
   image: mongo:4.0.8
   container_name: mongodb
-  command: mongod --auth
   restart: unless-stopped
   environment:
-   MONGO_INITDB_ROOT_USERNAME: mongodbuser
-   MONGO_INITDB_ROOT_PASSWORD: sopes1
    MONGO_INITDB_DATABASE: sopes1db
    MONGODB_DATA_DIR: /data/db
    MONDODB_LOG_DIR: /dev/null
