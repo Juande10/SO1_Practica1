@@ -39,11 +39,8 @@ def index():
         message='Welcome to the Dockerized Flask MongoDB app!'
     )
 
-@application.route('/getDataServer')
-def getServerData():
-    with open("fake_proc/cpu_201314412", "r+") as f:
-        data_cpu=f.read()
-
+@application.route('/getCPU')
+def getServerCPU():
     with open("fake_proc/ram_201314412", "r+") as f:
         data_ram = f.read()
 
@@ -51,9 +48,16 @@ def getServerData():
     contador = col.find().count()
 
     return jsonify(
-        total = contador,
-        data_cpu=data_cpu,
-        data_ram = data_ram
+        ram=data_ram
+    )
+
+@application.route('/getRAM')
+def getServerRAM():
+    with open("fake_proc/ram_201314412", "r+") as f:
+        data_ram = f.read()
+
+    return jsonify(
+        cpu=data_ram 
     )
 
 @application.route('/insert', methods=['POST'])
