@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import {Tab, Tabs} from 'react-bootstrap';
+import CPU from './components/cpu/cpu.js'
 
 class App extends Component {
   render() {
@@ -12,11 +13,11 @@ class App extends Component {
           <h2>Welcome to React</h2>
         </div>
         <div class="container-fluid m-4">
-          <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example" className="nav-fill">
-            <Tab eventKey="home" title="Home">
-              Hola bebe
+          <Tabs defaultActiveKey="servidorA" id="uncontrolled-tab-example" className="nav-fill">
+            <Tab eventKey="servidorA" title="Home">
+              <CPU URL={'http://35.232.49.94:5000'}></CPU>
             </Tab>
-            <Tab eventKey="profile" title="Profile">
+            <Tab eventKey="profile" title="Servidor B">
               Adios Bebe
             </Tab>
           </Tabs>

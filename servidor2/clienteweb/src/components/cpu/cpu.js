@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './CPU.css';
+import './cpu.css';
 import { Line } from 'react-chartjs-2';
 import { Container, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
@@ -34,12 +34,13 @@ class CPU extends Component {
             }
           ]
         };
-        this.state = { labels: [], data: data_percentage.datasets[0].data, actual: 0, dataset: data_percentage };
+        this.state = { labels: [], data: data_percentage.datasets[0].data, actual: 0, dataset: data_percentage};
     }
     
     componentDidMount() {
+        
         this.interval = setInterval(() => {
-          axios.get(this.props.URL + `/cpu`)
+          axios.get(this.props.URL + `/getCPU`)
             .then(res => {
               let labels1 = this.state.labels;
               let dt = new Date();
@@ -129,3 +130,5 @@ class CPU extends Component {
     }
     
 }
+
+export default CPU;
