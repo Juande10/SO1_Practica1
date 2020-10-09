@@ -41,14 +41,14 @@ def index():
 
 @application.route('/getCPU')
 def getServerCPU():
-    with open("fake_proc/ram_201314412", "r+") as f:
-        data_ram = f.read()
+    with open("fake_proc/cpu_201314412", "r+") as f:
+        data_cpu = f.read()
 
     data = request.json
     contador = col.find().count()
 
     return jsonify(
-        ram=data_ram
+        cpu=data_cpu
     )
 
 @application.route('/getRAM')
