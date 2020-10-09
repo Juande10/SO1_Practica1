@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import {Tab, Tabs} from 'react-bootstrap';
 
 class App extends Component {
   render() {
@@ -10,9 +11,16 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h2>Welcome to React</h2>
         </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <div class="container-fluid m-4">
+          <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example" className="nav-fill">
+            <Tab eventKey="home" title="Home">
+              Hola bebe
+            </Tab>
+            <Tab eventKey="profile" title="Profile">
+              Adios Bebe
+            </Tab>
+          </Tabs>
+        </div>
       </div>
     );
   }
