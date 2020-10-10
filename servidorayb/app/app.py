@@ -3,9 +3,10 @@ import json
 from flask import Flask, request, jsonify
 from flask_pymongo import PyMongo
 from pymongo import MongoClient
-
+from flask_cors import CORS
 
 application = Flask(__name__)
+CORS(application)
 
 class MongoApi:
     def __init__(self, data):
