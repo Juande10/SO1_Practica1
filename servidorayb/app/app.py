@@ -4,6 +4,7 @@ from flask import Flask, request, jsonify
 from flask_pymongo import PyMongo
 from pymongo import MongoClient
 from flask_cors import CORS
+from bson.json_util import dumps
 
 application = Flask(__name__)
 CORS(application)
@@ -59,6 +60,18 @@ def getServerRAM():
 
     return jsonify(
         cpu=data_ram 
+    )
+
+@application.route('/getCount')
+def getCount():
+    return jsonify(
+        total = col.find().count()
+    )
+
+@application.route('/getData')
+def getData():
+    return jsonify(
+        data = dumps(list(col.find()))
     )
 
 @application.route('/insert', methods=['POST'])
