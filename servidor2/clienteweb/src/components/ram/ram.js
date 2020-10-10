@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
-import './cpu.css';
+import './ram.css';
 import { Line } from 'react-chartjs-2';
 import { Container, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 
-
-class CPU extends Component {
+class RAM extends Component {
     constructor(props) {
         super(props);
         let data_percentage = {
           labels: [],
           datasets: [
             {
-              label: '% de CPU utilizado',
+              label: '% de RAM utilizado',
               fill: false,
               lineTension: 0.1,
               backgroundColor: 'rgba(75,192,192,0.4)',
@@ -40,18 +39,21 @@ class CPU extends Component {
     componentDidMount() {
         
         this.interval = setInterval(() => {
-          axios.get(this.props.URL + `/getCPU`)
+          axios.get(this.props.URL + `/getRAM`)
             .then(res => {
-              let labels1 = this.state.labels;
-              let dt = new Date();
-              labels1.push(dt.toLocaleTimeString());
-              let data1 = this.state.data;
-            
-              data1.push(JSON.parse(res.data['cpu']).usado);
-              if (labels1.length > 10) {
+            let labels1 = this.state.labels;
+            let dt = new Date();
+            labels1.push(dt.toLocaleTimeString());
+            let data1 = this.state.data;
+        
+            let total = JSON.parse(res.data['cpu']).MemoriaTotal;
+            let usado = JSON.parse(res.data['cpu']).MemoriaUsada;
+            let resdata = Math.round((usado * 100)/total,2);
+            data1.push(resdata);
+            if (labels1.length > 10) {
                 labels1.shift();
                 data1.shift();
-              }
+            }
     
               this.setState({ data: data1 })
               //dataset
@@ -82,7 +84,7 @@ class CPU extends Component {
                 ]
               };
     
-              this.setState({ actual: JSON.parse(res.data['cpu']).usado, labels: labels1, data: data1, dataset: data_percentage });
+              this.setState({ actual: resdata, labels: labels1, data: data1, dataset: data_percentage });
               let lineChart = this.reference.chartInstance
     
               lineChart.update();
@@ -103,7 +105,7 @@ class CPU extends Component {
             <Container fluid>
               <Row>
                 <Col>
-                  <h1> Porcentaje de CPU utilizado</h1>
+                  <h1> Porcentaje de RAM utilizado</h1>
                 </Col>
               </Row>
               <Row>
@@ -127,4 +129,4 @@ class CPU extends Component {
     
 }
 
-export default CPU;
+export default RAM;
