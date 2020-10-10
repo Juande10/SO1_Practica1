@@ -46,9 +46,8 @@ class RAM extends Component {
             labels1.push(dt.toLocaleTimeString());
             let data1 = this.state.data;
         
-            let total = JSON.parse(res.data['cpu']).MemoriaTotal;
             let usado = JSON.parse(res.data['cpu']).MemoriaUsada;
-            let resdata = Math.round((usado * 100)/total,2);
+            let resdata = Math.round(usado,2);
             data1.push(resdata);
             if (labels1.length > 10) {
                 labels1.shift();
@@ -61,7 +60,7 @@ class RAM extends Component {
                 labels: labels1,
                 datasets: [
                   {
-                    label: '% de CPU utilizado',
+                    label: '% de RAM utilizada',
                     fill: false,
                     lineTension: 0.1,
                     backgroundColor: 'rgba(75,192,192,0.4)',

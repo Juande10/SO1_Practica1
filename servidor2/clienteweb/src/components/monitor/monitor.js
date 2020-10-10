@@ -14,12 +14,13 @@ class Monitor extends Component {
     render() {
         return (
         <div>
-            <Row>
-                <Col>
+            <h2>Datos</h2>
+            <Row className="justify-content-md-center m-4">
+                <Col md={8}>
                     <DataMonitor URL = {this.state.url}></DataMonitor>
                 </Col>
             </Row>
-            <Row>
+            <Row className="m-4">
                 <Col md={6}>
                     <CPU URL={this.state.url}></CPU>
                 </Col>
