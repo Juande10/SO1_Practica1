@@ -18,7 +18,7 @@ class App extends Component {
                 <Monitor URL={'http://35.232.49.94:5000'}></Monitor>
             </Tab>
             <Tab eventKey="profile" title="Servidor B">
-
+            < Monitor URL={'http://35.224.249.130:5000'}></Monitor>
             </Tab>
           </Tabs>
         </div>
