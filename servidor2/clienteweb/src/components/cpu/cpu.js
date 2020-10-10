@@ -89,7 +89,7 @@ class CPU extends Component {
     
     
             })
-        }, 2000)
+        }, 5000)
     }
         
     componentWillUnmount() {

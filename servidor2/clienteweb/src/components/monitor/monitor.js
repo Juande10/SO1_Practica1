@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Row, Col } from 'react-bootstrap';
 import CPU from '../cpu/cpu.js'
 import RAM from '../ram/ram.js'
+import DataMonitor from '../datamonitor/datamonitor.js'
 
 
 class Monitor extends Component {
@@ -12,6 +13,12 @@ class Monitor extends Component {
 
     render() {
         return (
+        <div>
+            <Row>
+                <Col>
+                    <DataMonitor URL = {this.state.url}></DataMonitor>
+                </Col>
+            </Row>
             <Row>
                 <Col md={6}>
                     <CPU URL={this.state.url}></CPU>
@@ -20,6 +27,7 @@ class Monitor extends Component {
                     <RAM URL={this.state.url}></RAM>
                 </Col>
             </Row>
+        </div>
         );
     }
     

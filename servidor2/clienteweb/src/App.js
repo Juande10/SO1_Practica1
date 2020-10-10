@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import {Tab, Tabs, Row, Col} from 'react-bootstrap';
+import {Tab, Tabs} from 'react-bootstrap';
 import Monitor from './components/monitor/monitor.js';
 
 class App extends Component {
@@ -21,7 +21,7 @@ class App extends Component {
 
             </Tab>
           </Tabs>
-          </div>
+        </div>
       </div>
     );
   }
