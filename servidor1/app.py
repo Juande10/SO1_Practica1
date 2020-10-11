@@ -53,8 +53,7 @@ def processData(rdata):
 @app.route('/sendData', methods=['POST'])
 def start():
     print(request.json)
-    print(json.dumps(request.json)
-    res = processData(request.json)
+    res=processData(request.json)
     return Response(response = json.dumps(res), status = 200, mimetype = 'application/json')
 
 
