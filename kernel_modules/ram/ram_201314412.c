@@ -18,14 +18,14 @@ struct sysinfo inf;
 static int escribir_archivo(struct seq_file *archivo, void *v)
 {
     si_meminfo(&inf);
-    long memoria_total = (inf.totalram * 4);
-    long memoria_libre = (inf.freeram * 4);
+    long memoria_total = (inf.totalram);
+    long memoria_libre = (inf.freeram);
     seq_printf(archivo, "{\n");
     //seq_printf(archivo, "\"Meminfo\":{\n");
 
     seq_printf(archivo, " \"MemoriaTotal\":%8lu,\n", memoria_total / 1024);
     seq_printf(archivo, " \"MemoriaLibre\":%8lu,\n", memoria_libre / 1024);
-    seq_printf(archivo, " \"MemoriaUsada\":%i\n", (memoria_libre * 100) / memoria_total);
+    seq_printf(archivo, " \"MemoriaUsada\":%i\n", ((memoria_total - memoria_libre) * 100) / memoria_total);
     //seq_printf(archivo, " }\n");
     seq_printf(archivo, "}\n");
     return 0;
